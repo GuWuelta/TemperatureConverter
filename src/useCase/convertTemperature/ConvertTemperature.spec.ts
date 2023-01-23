@@ -1,92 +1,95 @@
-import { ConvertTemperatureUseCase } from "./ConvertTemperatureUseCase";
+import { ConvertTemperatureUseCase, Scales } from "./ConvertTemperatureUseCase";
 
 const convertTemperatureUseCase = new ConvertTemperatureUseCase();
 
-describe("Temperatures Conversion", () => {
+describe("Convert temperature", () => {
   it("should be able to convert celsius temperature to kelvin", () => {
     const convertedTemperature = convertTemperatureUseCase.execute({
       temperature: 37,
-      scale: "celsius",
-      scaleToConvert: "kelvin",
+      scale: Scales.celsius,
+      scaleToConvert: Scales.kelvin,
     });
-    expect(convertedTemperature).toEqual({ celsius: "37°", kelvin: "310°" });
+    expect(convertedTemperature).toEqual({ celsius: 37, kelvin: 310 });
   });
 
-  it("should be able to convert celsius temperature to farenheit", () => {
+  it("should be able to convert celsius temperature to fahrenheit", () => {
     const convertedTemperature = convertTemperatureUseCase.execute({
       temperature: 100,
-      scale: "celsius",
-      scaleToConvert: "farenheit",
+      scale: Scales.celsius,
+      scaleToConvert: Scales.fahrenheit,
     });
     expect(convertedTemperature).toEqual({
-      celsius: "100°",
-      farenheit: "212°",
+      celsius: 100,
+      fahrenheit: 212,
     });
   });
 
   it("should be able to convert kelvin temperature to celsius", () => {
     const convertedTemperature = convertTemperatureUseCase.execute({
       temperature: 293.15,
-      scale: "kelvin",
-      scaleToConvert: "celsius",
+      scale: Scales.kelvin,
+      scaleToConvert: Scales.celsius,
     });
-    expect(convertedTemperature).toEqual({ kelvin: "293.15°", celsius: "20°" });
+    expect(convertedTemperature).toEqual({ kelvin: 293.15, celsius: 20 });
   });
 
-  it("should be able to convert kelvin temperature to farenheit", () => {
+  it("should be able to convert kelvin temperature to fahrenheit", () => {
     const convertedTemperature = convertTemperatureUseCase.execute({
       temperature: 276,
-      scale: "kelvin",
-      scaleToConvert: "farenheit",
+      scale: Scales.kelvin,
+      scaleToConvert: Scales.fahrenheit,
     });
-    expect(convertedTemperature).toEqual({ kelvin: "276°", farenheit: "37°" });
+    expect(convertedTemperature).toEqual({ kelvin: 276, fahrenheit: 37 });
   });
 
-  it("should be able to convert farenheit temperature to celsius", () => {
+  it("should be able to convert fahrenheit temperature to celsius", () => {
     const convertedTemperature = convertTemperatureUseCase.execute({
       temperature: 100,
-      scale: "farenheit",
-      scaleToConvert: "celsius",
+      scale: Scales.fahrenheit,
+      scaleToConvert: Scales.celsius,
     });
-    expect(convertedTemperature).toEqual({ farenheit: "100°", celsius: "38°" });
+    expect(convertedTemperature).toEqual({
+      fahrenheit: 100,
+      celsius: 38,
+    });
   });
 
-  it("should be able to convert farenheit temperature to kelvin", () => {
+  it("should be able to convert fahrenheit temperature to kelvin", () => {
     const convertedTemperature = convertTemperatureUseCase.execute({
       temperature: 50,
-      scale: "farenheit",
-      scaleToConvert: "kelvin",
+      scale: Scales.fahrenheit,
+      scaleToConvert: Scales.kelvin,
     });
-    expect(convertedTemperature).toEqual({ farenheit: "50°", kelvin: "283°" });
+    expect(convertedTemperature).toEqual({ fahrenheit: 50, kelvin: 283 });
   });
 
-  it("should be able to throw a error if scale and scale to convert are equal", async () => {
-    await expect(async () => {
-      await convertTemperatureUseCase.execute({
+  it("should be able to throw a error if scale and scale to convert are equal", () => {
+    expect(() =>
+      convertTemperatureUseCase.execute({
         temperature: 100,
-        scale: "celsius",
-        scaleToConvert: "celsius",
-      });
-    }).rejects.toEqual(new Error("Scales cannot be equal!"));
+        scale: Scales.celsius,
+        scaleToConvert: Scales.celsius,
+      })
+    ).toThrowError("Scales cannot be equal!");
   });
 
-  it("should be able to throw a error if scale dont exist", async () => {
-    await expect(async () => {
-      await convertTemperatureUseCase.execute({
+  it("should be able to throw a error if scale not exist", () => {
+    expect(() =>
+      convertTemperatureUseCase.execute({
         temperature: 100,
         scale: "inexistentScale",
         scaleToConvert: "celsius",
-      });
-    }).rejects.toEqual(new Error("Scale does not exist!"));
+      })
+    ).toThrowError("Scale does not exist!");
   });
 
-  it("should be able to throw a error if scale to convert dont exist", async () => {
-    await expect(async () => {
-      await convertTemperatureUseCase.execute({
+  it("should be able to throw a error if scale to convert not exist", () => {
+    expect(() =>
+      convertTemperatureUseCase.execute({
         temperature: 100,
         scale: "celsius",
         scaleToConvert: "inexistentScale",
-      });
-    }).rejects.toEqual(new Error("Scale to convert does not exist!"));
+      })
+    ).toThrowError("Scale does not exist!");
   });
 });

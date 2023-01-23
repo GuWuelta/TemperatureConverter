@@ -1,4 +1,4 @@
-import { ConvertTemperatureUseCase } from "./useCase/convertTemperature/ConvertTemperatureUseCase";
+import { ConvertTemperatureUseCase, Scales } from "./useCase/convertTemperature/ConvertTemperatureUseCase";
 const convertTemperatureUseCase = new ConvertTemperatureUseCase();
 
-console.log(convertTemperatureUseCase.execute({temperature: 293.15, scale: "kelvin", scaleToConvert: "celsius"}));
+console.log(convertTemperatureUseCase.execute({temperature: 293.15, scale: Scales.kelvin, scaleToConvert: Scales.celsius}));
