@@ -1,44 +1,51 @@
 // CELSIUS > KELVIN = CELSIUS + 273
-// CELSIUS > FARENHEIT = 1.8 * CELSIUS + 32
+// CELSIUS > fahrenheit = 1.8 * CELSIUS + 32
 
 // KELVIN > CELSIUS = KELVIN - 273
-// KELVIN > FARENHEIT = (converter kelvin para celsius e realizar CELSIUS > FARENHEIT)
+// KELVIN > fahrenheit = (converter kelvin para celsius e realizar CELSIUS > fahrenheit)
 
-// FARENHEIT > CELSIUS = (FARENHEIT - 32) / 1.8
-// FARENHEIT > KELVIN = (converter farenheit para celsius e realizar CELSIUS > KELVIN)
+// fahrenheit > CELSIUS = (fahrenheit - 32) / 1.8
+// fahrenheit > KELVIN = (converter fahrenheit para celsius e realizar CELSIUS > KELVIN)
 
-interface IData {
-    temperature: number;
-    scale: string;
-    scaleToConvert: string
+export enum Scales {
+  fahrenheit = "fahrenheit",
+  celsius = "celsius",
+  kelvin = "kelvin",
+}
+interface ConvertTemperatureProps {
+  temperature: number;
+  scale: Scales;
+  scaleToConvert: Scales;
 }
 
 export class ConvertTemperatureUseCase {
-  execute({temperature, scale, scaleToConvert}: IData): Record<string, number | string> {
+  execute({
+    temperature,
+    scale,
+    scaleToConvert,
+  }: ConvertTemperatureProps): Record<string, number | string> {
     if (scale === scaleToConvert) throw new Error("Scales cannot be equal!");
-
-    if (scale !== "celsius" && scale !== "kelvin" && scale !== "farenheit")
-      throw new Error("Scale does not exist!");
-
-    if (scaleToConvert !== "celsius" && scaleToConvert !== "kelvin" && scaleToConvert !== "farenheit")
-      throw new Error("Scale to convert does not exist!");
+    const scalesArr = Object.values(Scales);
+    const isValidScale = scalesArr.find((value) => value === scale);
+    const isValidScaleToConvert = scalesArr.find((value) => value === scaleToConvert);
+    if (!isValidScale || !isValidScaleToConvert) throw new Error("Scale does not exist!");
 
     const concatedScales: string = `${scale}To${scaleToConvert}`;
 
     const convertOperations: Record<string, number> = {
       kelvinTocelsius: temperature - 273.15,
-      farenheitTocelsius: (temperature - 32) / 1.8,
-      kelvinTofarenheit: ((temperature - 273.15) * 9) / 5 + 32,
-      farenheitTokelvin: ((temperature - 32) * 5) / 9 + 273.15,
-      celsiusTofarenheit: 1.8 * temperature + 32,
+      fahrenheitTocelsius: (temperature - 32) / 1.8,
+      kelvinTofahrenheit: ((temperature - 273.15) * 9) / 5 + 32,
+      fahrenheitTokelvin: ((temperature - 32) * 5) / 9 + 273.15,
+      celsiusTofahrenheit: 1.8 * temperature + 32,
       celsiusTokelvin: temperature + 273.15,
     };
 
     const convertedTemperature: number = convertOperations[concatedScales];
 
     return {
-      [scale]: `${temperature}°`,
-      [scaleToConvert]: `${convertedTemperature.toFixed(0)}°`,
+      [scale]: temperature,
+      [scaleToConvert]: Number(convertedTemperature.toFixed(0)),
     };
   }
 }
